@@ -1,12 +1,22 @@
 package main
 
 import (
+	"log"
+
 	"github.com/Shalqarov/student-crud/api"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/Shalqarov/student-crud/database"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	app := api.Setup()
-	app.Use(logger.New())
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("err loading: %v", err)
+	}
+	db, err := database.Connect()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	app := api.Setup(db)
 	app.Listen(":8080")
 }
