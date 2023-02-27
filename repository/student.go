@@ -17,20 +17,20 @@ type Student struct {
 }
 
 type Repo struct {
-	DB *gorm.DB
+	db *gorm.DB
 }
 
 func NewRepo(db *gorm.DB) Repo {
-	return Repo{DB: db}
+	return Repo{db: db}
 }
 
 func (a *Repo) Create(student *Student) error {
-	return a.DB.Create(student).Error
+	return a.db.Create(student).Error
 }
 
 func (a *Repo) FindOne(id string) (*Student, error) {
 	student := Student{}
-	res := a.DB.First(&student, Student{ID: id})
+	res := a.db.First(&student, Student{ID: id})
 	if res.Error != nil {
 		return nil, res.Error
 	}
@@ -39,7 +39,7 @@ func (a *Repo) FindOne(id string) (*Student, error) {
 
 func (a *Repo) FindAll() ([]Student, error) {
 	students := make([]Student, 0)
-	return students, a.DB.Find(&students).Error
+	return students, a.db.Find(&students).Error
 }
 
 func (a *Repo) Update(upd *Student) (*Student, error) {
@@ -52,7 +52,7 @@ func (a *Repo) Update(upd *Student) (*Student, error) {
 	student.Email = upd.Email
 	student.PhoneNumber = upd.PhoneNumber
 	student.UpdatedAt = time.Now()
-	a.DB.Save(student)
+	a.db.Save(student)
 	return student, nil
 }
 
@@ -61,6 +61,6 @@ func (a *Repo) Delete(id string) error {
 	if err != nil {
 		return err
 	}
-	a.DB.Delete(student)
+	a.db.Delete(student)
 	return nil
 }
