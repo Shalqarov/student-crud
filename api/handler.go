@@ -28,11 +28,9 @@ func (h *Handler) create(c *fiber.Ctx) error {
 				"errors": err.Error(),
 			})
 	}
-	c.Status(200).JSON(&fiber.Map{
+	return c.Status(200).JSON(&fiber.Map{
 		"student": student,
 	})
-
-	return nil
 }
 
 func (h *Handler) read(c *fiber.Ctx) error {
@@ -50,26 +48,58 @@ func (h *Handler) read(c *fiber.Ctx) error {
 		})
 
 	}
-	c.Status(http.StatusOK).JSON(&fiber.Map{
+	return c.Status(http.StatusOK).JSON(&fiber.Map{
 		"student": student,
 	})
-	return nil
 }
 
 func (h *Handler) readCollection(c *fiber.Ctx) error {
 	students, _ := h.repo.FindAll()
-	c.Status(http.StatusOK).JSON(&fiber.Map{
+	return c.Status(http.StatusOK).JSON(&fiber.Map{
 		"students": students,
 	})
-	return nil
 }
 
 func (h *Handler) update(c *fiber.Ctx) error {
-	// TODO
-	return nil
+	updated := new(repository.Student)
+	err := c.BodyParser(updated)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"error": err.Error(),
+		})
+	}
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil || id <= 0 {
+		return c.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"error": err.Error(),
+		})
+	}
+	updated.ID = uint64(id)
+	student, err := h.repo.Update(updated)
+	if err != nil {
+		return c.Status(http.StatusNotFound).JSON(&fiber.Map{
+			"error": "student not found",
+		})
+	}
+	return c.Status(http.StatusOK).JSON(&fiber.Map{
+		"student": student,
+	})
 }
 
 func (h *Handler) delete(c *fiber.Ctx) error {
-	// TODO
-	return nil
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil || id <= 0 {
+		return c.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"error": err.Error(),
+		})
+	}
+	err = h.repo.Delete(uint64(id))
+	if err != nil {
+		return c.Status(http.StatusNotFound).JSON(&fiber.Map{
+			"error": "article not found",
+		})
+	}
+	return c.Status(http.StatusOK).JSON(&fiber.Map{
+		"message": "article deleted successfully",
+	})
 }
