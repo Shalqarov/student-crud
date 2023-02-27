@@ -96,10 +96,10 @@ func (h *Handler) delete(c *fiber.Ctx) error {
 	err = h.repo.Delete(uint64(id))
 	if err != nil {
 		return c.Status(http.StatusNotFound).JSON(&fiber.Map{
-			"error": "article not found",
+			"error": "student not found",
 		})
 	}
 	return c.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "article deleted successfully",
+		"message": "student deleted successfully",
 	})
 }
