@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:14.1-alpine
+    container_name: studentdb
+    environment:
+      POSTGRES_DB: schooldb
+      POSTGRES_USER: mango
+      POSTGRES_PASSWORD: "123123"
+      PGDATA: /data/postgres
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+  school:
+    image: school
+    build: .
+    ports:
+      - 8080:8080
+    restart: on-failure
+    depends_on:
+      - db
+volumes:
+  pg-data:
+    driver: local
+  school:
