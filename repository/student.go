@@ -7,7 +7,7 @@ import (
 )
 
 type Student struct {
-	ID          string    `json:"id,omitempty" gorm:"primaryKey"`
+	ID          uint64    `json:"id,omitempty" gorm:"primaryKey"`
 	FirstName   string    `json:"first_name,omitempty"`
 	LastName    string    `json:"last_name,omitempty"`
 	Email       string    `json:"email,omitempty"`
@@ -28,7 +28,7 @@ func (a *Repo) Create(student *Student) error {
 	return a.db.Create(student).Error
 }
 
-func (a *Repo) FindOne(id string) (*Student, error) {
+func (a *Repo) FindOne(id uint64) (*Student, error) {
 	student := Student{}
 	res := a.db.First(&student, Student{ID: id})
 	if res.Error != nil {
@@ -56,7 +56,7 @@ func (a *Repo) Update(upd *Student) (*Student, error) {
 	return student, nil
 }
 
-func (a *Repo) Delete(id string) error {
+func (a *Repo) Delete(id uint64) error {
 	student, err := a.FindOne(id)
 	if err != nil {
 		return err
