@@ -7,6 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// Setup receives a connection to the database as input, and passes it to the repository.
+// This is also where routers and middleware are configured.
 func Setup(db *gorm.DB) *fiber.App {
 	h := &Handler{
 		repo: repository.NewRepo(db),
