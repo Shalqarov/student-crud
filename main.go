@@ -1,18 +1,12 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/Shalqarov/student-crud/api"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func main() {
-	app := fiber.New()
-
+	app := api.Setup()
 	app.Use(logger.New())
-
-	app.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.SendString("раз раз проверка")
-	})
-
 	app.Listen(":8080")
 }
