@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"net/mail"
 	"strconv"
 
 	"github.com/Shalqarov/student-crud/repository"
@@ -19,6 +20,12 @@ func (h *Handler) create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(
 			fiber.Map{
 				"errors": err.Error() + "; content-type must be 'application/json'",
+			})
+	}
+	if _, err := mail.ParseAddress(student.Email); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(
+			fiber.Map{
+				"errors": err.Error(),
 			})
 	}
 	err = h.repo.Create(student)
